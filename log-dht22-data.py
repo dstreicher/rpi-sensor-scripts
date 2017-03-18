@@ -18,7 +18,7 @@ try:
   scope =  ['https://spreadsheets.google.com/feeds']
   credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
   gc = gspread.authorize(credentials)
-  worksheet = gc.open(os.environ['RPI_SPREADSHEET_KEY']).sheet1
+  worksheet = gc.open_by_key(os.environ['RPI_SPREADSHEET_KEY']).sheet1
 except Exception as ex:
   print('Login Error:', ex)
   sys.exit(1)
