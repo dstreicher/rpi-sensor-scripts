@@ -12,13 +12,15 @@ from oauth2client.service_account import ServiceAccountCredentials
 DHT_TYPE = Adafruit_DHT.DHT22
 DHT_PIN = 22
 
+spreadsheet = None
 worksheet = None
 
 try:
   scope =  ['https://spreadsheets.google.com/feeds']
   credentials = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
   gc = gspread.authorize(credentials)
-  worksheet = gc.open_by_key(os.environ['RPI_SPREADSHEET_KEY']).sheet1
+  spreadsheet = gc.open_by_key(os.environ['RPI_SPREADSHEET_KEY'])
+  worksheet = spreadsheet.worksheet(os.environ['RPI_LOCATION'])
 except Exception as ex:
   print('Login Error:', ex)
   sys.exit(1)
@@ -30,7 +32,7 @@ if humidity is None or temp is None:
   sys.exit(1)
 
 try:
-  worksheet.append_row((datetime.datetime.now(), os.environ['RPI_LOCATION'], temp, humidity))
+  worksheet.append_row((datetime.datetime.now(), temp, humidity))
 except Exception as ex:
   print('Append Error:', ex)
   sys.exit(1)
